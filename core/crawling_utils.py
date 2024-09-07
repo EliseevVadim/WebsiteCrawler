@@ -106,10 +106,11 @@ class Crawler:
                 return
             suffix = generate_salt_suffix()
             last_updated = soup.find("meta", attrs={"name": "changed"}).attrs["content"]
+            last_updated_mark = last_updated if last_updated is not None else ""
             page_text = content_div.get_text(separator='\n\n', strip=True)
             title = soup.title.string.strip() if soup.title else "index"
             page_name = re.sub(r'[\\/*?:"<>|]', "_", title)
-            page_name = f"{page_name} {suffix} {last_updated}"
+            page_name = f"{page_name} {suffix} {last_updated_mark}"
             with open(f"{self.__data_path}/{page_name}.txt", "w", encoding="utf-8") as f:
                 f.write(page_text)
             logger.info(f"Page {page_name} saved")
