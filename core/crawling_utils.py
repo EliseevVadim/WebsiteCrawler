@@ -1,5 +1,6 @@
 import requests
 import re
+import uuid
 
 from bs4 import BeautifulSoup
 from core.file_utils import *
@@ -30,6 +31,11 @@ def link_lead_to_file(url):
     possible_file_name = os.path.basename(parsed_url.path)
     file_extension = os.path.splitext(possible_file_name)[1].lower()
     return file_extension != ""
+
+
+def generate_salt_suffix(length=10):
+    suffix = uuid.uuid4().hex[:length]
+    return suffix
 
 
 class Crawler:
@@ -98,11 +104,12 @@ class Crawler:
             if content_div is None:
                 logger.warning(f"Контент на странице {url} не найден")
                 return
+            suffix = generate_salt_suffix()
             last_updated = soup.find("meta", attrs={"name": "changed"}).attrs["content"]
             page_text = content_div.get_text(separator='\n\n', strip=True)
             title = soup.title.string.strip() if soup.title else "index"
             page_name = re.sub(r'[\\/*?:"<>|]', "_", title)
-            page_name = f"{page_name}_{last_updated}"
+            page_name = f"{page_name} {suffix} {last_updated}"
             with open(f"{self.__data_path}/{page_name}.txt", "w", encoding="utf-8") as f:
                 f.write(page_text)
             logger.info(f"Page {page_name} saved")
