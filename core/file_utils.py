@@ -37,8 +37,7 @@ def normalize_filenames(directory):
     if not part_to_remove:
         return
     for filename in filenames:
-        name, ext = os.path.splitext(filename)
-        new_name = filename.replace(part_to_remove, "").strip() + ext
+        new_name = filename.replace(part_to_remove, "").strip()
         new_path = os.path.join(directory, new_name)
         old_path = os.path.join(directory, filename)
         os.rename(old_path, new_path)
