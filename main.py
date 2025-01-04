@@ -1,7 +1,7 @@
 import argparse
 import sys
 
-from core.crawling_utils import *
+from core.crawling import *
 
 data_path = "data"
 
@@ -15,14 +15,18 @@ def check_arguments(args=None):
     parser.add_argument('-n', '--normalize_filenames', action=argparse.BooleanOptionalAction,
                         help='marks that we gonna normalize names of files for parsed html pages', required=False,
                         default=False)
+    parser.add_argument('-re', '--remove_empty_files', action=argparse.BooleanOptionalAction,
+                        help='marks that we gonna remove empty files after parsing html pages', required=False,
+                        default=False)
     parser.add_argument('-ignore_files', '--ignore_files', action=argparse.BooleanOptionalAction,
                         help='marks that we gonna parse html pages only', required=False,
                         default=False)
     parsed = parser.parse_args(args)
-    return parsed.url, parsed.content_class, parsed.depth, parsed.normalize_filenames, parsed.ignore_files
+    return (parsed.url, parsed.content_class, parsed.depth, parsed.normalize_filenames, parsed.remove_empty_files,
+            parsed.ignore_files)
 
 
 if __name__ == '__main__':
-    url, content_class, depth, normalize_filenames, ignore_files = check_arguments(sys.argv[1:])
+    url, content_class, depth, normalize_filenames, remove_empty_files, ignore_files = check_arguments(sys.argv[1:])
     crawler = Crawler(url=url, data_path=data_path, content_class=content_class, ignore_files=ignore_files)
-    crawler.crawl(normalize_names=normalize_filenames, depth=depth)
+    crawler.crawl(normalize_names=normalize_filenames, depth=depth, remove_empty_files=remove_empty_files)

@@ -44,6 +44,18 @@ def normalize_filenames(directory):
     logger.info("Имена файлов успешно нормализованы")
 
 
+def delete_empty_files(directory):
+    logger.info("Процедура удаления пустых файлов запущена")
+    deleted_files_count = 0
+    for filename in os.listdir(directory):
+        file_path = os.path.join(directory, filename)
+        if os.path.isfile(file_path) and os.path.getsize(file_path) == 0:
+            os.remove(file_path)
+            deleted_files_count += 1
+    logger.info("Процедура удаления пустых файлов завершена")
+    logger.info(f"Всего удалено файлов: {deleted_files_count}")
+
+
 def find_longest_common_substring(strings):
     if not strings:
         return ""

@@ -47,12 +47,14 @@ class Crawler:
         self.__visited = set()
         self.__base_url = f"{urlparse(url).scheme}://{urlparse(url).netloc}"
 
-    def crawl(self, depth=None, normalize_names=False):
+    def crawl(self, depth=None, normalize_names=False, remove_empty_files=True):
         directory_name = prepare_crawl_environment(self.__data_path)
         self.__data_path = directory_name
         self.crawling_step(self.__url, depth)
         if normalize_names:
             normalize_filenames(directory_name)
+        if remove_empty_files:
+            delete_empty_files(directory_name)
 
     def crawling_step(self, url, depth):
         try:
